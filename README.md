@@ -3,6 +3,7 @@
 <img width="2200" height="1440" alt="CLAUDE_ESTATE" src="https://github.com/user-attachments/assets/7b392a20-acd6-43d1-b2a1-4769b71839fb" />
 
 > *I T S T H E R E A L E S T A T E*
+
 Perpetual autonomous work loop for Claude Code agent with no end condition, no memory regression, no context overfill.
 
 ## About
