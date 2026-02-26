@@ -1,27 +1,27 @@
 #!/bin/bash
 
-# Claude Estate Setup Script
-# Creates state file for the perpetual autonomous loop
+# claude estate — setup
+# creates state file for the perpetual autonomous loop
 
 set -euo pipefail
 
-# Collect all arguments as the user prompt (optional)
+# collect all arguments as the user prompt (optional)
 USER_PROMPT="${*:-}"
 
 mkdir -p .claude
 
-# Check if already active
+# already active? just continue
 if [[ -f ".claude/claude-estate.local.md" ]]; then
   CURRENT_CYCLE=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' ".claude/claude-estate.local.md" | grep '^cycle:' | sed 's/cycle: *//')
   echo "Claude Estate is already active (cycle $CURRENT_CYCLE)"
   echo "   Continuing from where we left off."
   echo ""
-  # Still output the prompt so Claude picks up
+  # output the prompt so claude picks up
   awk '/^---$/{i++; next} i>=2' ".claude/claude-estate.local.md"
   exit 0
 fi
 
-# Build the user prompt section
+# build user prompt section
 PROMPT_SECTION=""
 if [[ -n "$USER_PROMPT" ]]; then
   PROMPT_SECTION="USER PROMPT (preserved — this is what was asked):
