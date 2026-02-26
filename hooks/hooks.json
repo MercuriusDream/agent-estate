@@ -1,0 +1,15 @@
+{
+  "description": "Claude Estate stop hook — perpetual loop with no end condition",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/stop-hook.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
