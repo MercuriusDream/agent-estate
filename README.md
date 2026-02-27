@@ -19,6 +19,21 @@ Built this to run 100+ hour autonomous coding sessions with <10 manual steerings
 
 ## Install
 
+### Claude Code Plugin (recommended)
+
+```
+/plugin marketplace add MercuriusDream/agent-estate
+/plugin install agent-estate@MercuriusDream
+```
+
+### npx (cross-agent)
+
+```bash
+npx add-skill MercuriusDream/agent-estate
+```
+
+### Manual
+
 ```bash
 git clone https://github.com/MercuriusDream/agent-estate.git
 
@@ -31,7 +46,7 @@ chmod +x agent-estate/scripts/setup-estate.sh
 chmod +x agent-estate/hooks/stop-hook.sh
 ```
 
-Requires `jq`:
+### Requires `jq`
 
 ```bash
 brew install jq        # macOS
