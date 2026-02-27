@@ -4,24 +4,24 @@
 
 > *IT'S THE FREE REAL AGENT ESTATE*
 
-Perpetual autonomous work loop for Claude Code agent with no end condition, no memory regression, no context overfill.
+Autonomous work loop for Claude Code. No end condition. Persistent memory. Zero config.
 
-## About
+Used it to build a [from-scratch C++ web browser](https://github.com/MercuriusDream/Vibrowser) — 287 autonomous cycles, 100+ hours, 3,374 tests, zero failures, <10 manual steerings.
 
-Agent Estate turns Claude Code into a perpetual autonomous agent — cycle after cycle — maintaining a persistent ledger across all sessions. It never stops until you say so.
+## Why Agent Estate?
 
-Built this to run 100+ hour autonomous coding sessions with <10 manual steerings. Used it to build a [from-scratch C++ web browser](https://github.com/MercuriusDream/Vibrowser) in 287 autonomous cycles — 3,374 tests, zero failures.
-
-- Stop hook intercepts every exit attempt and re-injects the prompt
-- Rate limits? Waits and retries. API overloaded? Backs off and comes back
-- Persistent ledger tracks everything across sessions
-- "Tell The Next Claude" handoff for cross-context memory
+- **Native hooks, not a wrapper** — uses Claude Code's Stop event to intercept exits. No bash wrapper, no tmux, no external process manager
+- **Zero config** — no PRD files, no task definitions, no project setup. Just `/agent-estate:start`
+- **Persistent memory** — ledger tracks everything across sessions. "Tell The Next Claude" handoff for cross-context memory. Context doesn't reset between cycles
+- **Auto-stop when done** — `--done` flag lets Claude stop itself when the task is complete. Or run perpetual (default)
+- **Rate limit resilience** — detects 429/529 errors, waits, retries. Never crashes, never loses state
+- **~400 lines total** — the entire plugin. 3 directories, 7 files. Nothing to configure, nothing to break
 
 ## Install
 
 ### Claude Code Plugin (recommended)
 
-```
+```bash
 /plugin marketplace add MercuriusDream/agent-estate
 /plugin install agent-estate@MercuriusDream
 ```
@@ -36,17 +36,13 @@ npx skills add MercuriusDream/agent-estate
 
 ```bash
 git clone https://github.com/MercuriusDream/agent-estate.git
-
-# symlink into local plugins
 mkdir -p ~/.claude/plugins/local
 ln -s "$(pwd)/agent-estate" ~/.claude/plugins/local/agent-estate
-
-# make scripts executable
 chmod +x agent-estate/scripts/setup-estate.sh
 chmod +x agent-estate/hooks/stop-hook.sh
 ```
 
-### Requires `jq`
+Requires `jq`:
 
 ```bash
 brew install jq        # macOS
@@ -55,93 +51,96 @@ sudo apt install jq    # debian/ubuntu
 
 ## Usage
 
-```
-/agent-estate:start                                     # full autonomy, perpetual
-/agent-estate:start build a web server with tests       # guided prompt, perpetual
-/agent-estate:start --done build a web server with tests  # stops when done
-/agent-estate:status                                    # check cycle, stats, handoff
-/agent-estate:stop                                      # manual stop
+```bash
+/agent-estate:start                                       # full autonomy, perpetual
+/agent-estate:start build a web server with tests         # guided prompt, perpetual
+/agent-estate:start --done build a web server with tests  # auto-stops when done
+/agent-estate:status                                      # check cycle, mode, stats
+/agent-estate:stop                                        # manual stop
 ```
 
 ## How It Works
 
-### Loop
-
 ```
-read ledger → pick next task → do the work → update ledger → try to exit
-  → stop hook intercepts → blocks exit → re-injects prompt → loop continues
+start → read ledger → pick task → do the work → update ledger → try to exit
+          ↑         stop hook intercepts → blocks exit → re-injects prompt ↲
 ```
 
-### Ledger
+### The Hook
+
+`hooks/stop-hook.sh` runs on every Claude Stop event:
+
+1. No state file? → exit normally
+2. `done: true` in frontmatter? → remove state file, exit (auto-stop)
+3. Rate limited (429)? → wait 60s, retry
+4. API overloaded (529)? → wait 30s, retry
+5. Otherwise → increment cycle, re-inject prompt, block exit
+
+### The Ledger
 
 `.claude/agent-estate.md` — the persistent brain. Every Claude reads it, every Claude updates it.
 
-- **Current Status** — phase, focus, momentum, cycle count
-- **Session Log** — what happened each session
-- **Worked Things** — table of everything done with files touched
-- **Future Works** — prioritized task queue
-- **Statistics** — cycles, tests, bugs fixed, features shipped
-- **Tell The Next Claude** — sacred handoff message
-
-### Stop Hook
-
-`hooks/stop-hook.sh` — the core engine.
-
-1. Checks if `.claude/agent-estate.local.md` exists (loop active?)
-2. Checks if `done: true` in frontmatter → removes state file, allows exit
-3. If active and not done: increments cycle counter, re-injects prompt, blocks exit
-4. If rate limited: waits 60s, retries
-5. If API overloaded: waits 30s, retries
-6. If state file removed (`/agent-estate:stop`): allows normal exit
+| Section | Purpose |
+|---------|---------|
+| **Current Status** | Phase, focus, momentum, cycle count |
+| **Session Log** | What happened each session |
+| **Worked Things** | Table of everything done with files touched |
+| **Future Works** | Prioritized task queue |
+| **Statistics** | Cycles, tests, bugs fixed, features shipped |
+| **Tell The Next Claude** | Sacred handoff message — letter to yourself with amnesia |
 
 ### Work Priority
 
-Built into the protocol:
+Built into the protocol, in order:
 
-1. Broken things — failing tests, bugs, errors
-2. Incomplete things — half-finished features, TODOs
-3. Missing things — no tests, no error handling
-4. Ugly things — code smells, dead code
-5. Slow things — performance issues
-6. New things — features that improve the project
-7. Creative things — surprise the user
+1. **Broken** — failing tests, bugs, errors
+2. **Incomplete** — half-finished features, TODOs, FIXMEs
+3. **Missing** — no tests, no error handling
+4. **Ugly** — code smells, dead code
+5. **Slow** — performance issues
+6. **New** — features that improve the project
+7. **Creative** — surprise the user
+
+## Battle-Tested
+
+Built [Vibrowser](https://github.com/MercuriusDream/Vibrowser) — a from-scratch C++ browser engine:
+
+| | |
+|---|---|
+| Autonomous cycles | 287 across 123 sessions |
+| Runtime | 100+ hours, <10 manual steerings |
+| Tests | 3,374 — zero failures |
+| Features | 2,440+ shipped, 124 bugs fixed |
+| Lines | 168,360+ |
+| Engines | CSS (370+ properties), JS (QuickJS), CORS/CSP/TLS |
+| Result | Renders real websites off the live internet |
+| Fun fact | [claude.ai 403'd the browser Claude built](https://x.com/Mercuriusdream/status/2026732290630672682) |
 
 ## Files
 
 ```
 agent-estate/
-├── .claude-plugin/plugin.json
+├── .claude-plugin/plugin.json   # plugin manifest
 ├── commands/
-│   ├── start.md
-│   ├── stop.md
-│   └── status.md
+│   ├── start.md                 # /agent-estate:start
+│   ├── stop.md                  # /agent-estate:stop
+│   └── status.md                # /agent-estate:status
 ├── hooks/
-│   ├── hooks.json
-│   └── stop-hook.sh
+│   ├── hooks.json               # registers stop hook
+│   └── stop-hook.sh             # core engine
 ├── scripts/
-│   └── setup-estate.sh
-├── LICENSE
+│   └── setup-estate.sh          # creates state file
+├── SKILL.md                     # skill definition
+├── AGENTS.md                    # agent instructions
 └── README.md
 ```
-
-## Battle-Tested
-
-Used to build [Vibrowser](https://github.com/MercuriusDream/Vibrowser) — a from-scratch C++ browser engine:
-
-- 287 autonomous cycles across 123 sessions
-- 100+ hours autonomous runtime, <10 manual steerings
-- 3,374 tests, zero failures
-- 2,440+ features, 124 bugs fixed, 168,360+ lines
-- CSS engine (370+ properties), JS engine (QuickJS), CORS/CSP/TLS
-- Renders real websites off the live internet
-- [claude.ai 403'd the browser Claude built](https://x.com/Mercuriusdream/status/2026732290630672682)
 
 ## Tips
 
 - **Long sessions** — Claude Max recommended for hours-long autonomous runs
 - **Guiding prompts** — focus without being restrictive
-- **Ledger size** — if it gets large (300KB+), Claude will summarize older cycles. you can also manually trim
-- **Resuming** — ledger persists after stop. start again and Claude picks up from the handoff
+- **Ledger size** — if it gets large (300KB+), Claude will auto-summarize older cycles
+- **Resuming** — ledger persists after stop. Start again and Claude picks up from the handoff
 - **Full autonomy** — no prompt = Claude explores and decides what's most valuable
 
 ## License
