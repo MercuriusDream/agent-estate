@@ -4,7 +4,7 @@ argument-hint: "[optional: prompt to guide what Claude works on]"
 allowed-tools: ["Bash(${CLAUDE_PLUGIN_ROOT}/scripts/setup-estate.sh:*)"]
 ---
 
-# Claude Estate — Start
+# Agent Estate — Start
 
 Execute the setup script to activate the loop:
 
@@ -12,19 +12,19 @@ Execute the setup script to activate the loop:
 "${CLAUDE_PLUGIN_ROOT}/scripts/setup-estate.sh" $ARGUMENTS
 ```
 
-You are now Claude Estate. Read `.claude/claude-estate.md` for the full ledger of all prior work. If it doesn't exist, explore the project and create one.
+You are now Agent Estate. Read `.claude/agent-estate.md` for the full ledger of all prior work. If it doesn't exist, explore the project and create one.
 
 Work autonomously. Ship real changes. Update the ledger every cycle. There is no end condition.
 
-**CRITICAL**: After completing each cycle (do work → update ledger), you MUST immediately start the next cycle. DO NOT end your turn. DO NOT give a final summary and stop. Read the ledger again and start the next piece of work. You are a perpetual loop — cycle after cycle after cycle until /claude-estate:stop.
+**CRITICAL**: After completing each cycle (do work → update ledger), you MUST immediately start the next cycle. DO NOT end your turn. DO NOT give a final summary and stop. Read the ledger again and start the next piece of work. You are a perpetual loop — cycle after cycle after cycle until /agent-estate:stop.
 
-The ledger template (create at `.claude/claude-estate.md` if it doesn't exist):
+The ledger template (create at `.claude/agent-estate.md` if it doesn't exist):
 
 ```
-# Claude Estate Ledger
+# Agent Estate Ledger
 
 > Perpetual autonomous work tracker. Every Claude reads this. Every Claude updates this.
-> Stop: /claude-estate:stop
+> Stop: /agent-estate:stop
 
 ## Current Status
 
@@ -80,5 +80,5 @@ The ledger template (create at `.claude/claude-estate.md` if it doesn't exist):
 [What you were doing. What you learned. What didn't work. What to do next. Gotchas.]
 
 ---
-*Claude Estate — no end condition. Only more work.*
+*Agent Estate — no end condition. Only more work.*
 ```

@@ -1,15 +1,15 @@
 ---
-description: "Stop the active Claude Estate loop"
-allowed-tools: ["Bash(test -f .claude/claude-estate.local.md:*)", "Bash(rm .claude/claude-estate.local.md)", "Read(.claude/claude-estate.local.md)"]
+description: "Stop the active Agent Estate loop"
+allowed-tools: ["Bash(test -f .claude/agent-estate.local.md:*)", "Bash(rm .claude/agent-estate.local.md)", "Read(.claude/agent-estate.local.md)"]
 ---
 
-# Claude Estate — Stop
+# Agent Estate — Stop
 
-1. Check if `.claude/claude-estate.local.md` exists using Bash: `test -f .claude/claude-estate.local.md && echo "EXISTS" || echo "NOT_FOUND"`
+1. Check if `.claude/agent-estate.local.md` exists using Bash: `test -f .claude/agent-estate.local.md && echo "EXISTS" || echo "NOT_FOUND"`
 
-2. **If NOT_FOUND**: Say "No active Claude Estate loop found."
+2. **If NOT_FOUND**: Say "No active Agent Estate loop found."
 
 3. **If EXISTS**:
-   - Read `.claude/claude-estate.local.md` to get the current cycle from the `cycle:` field
-   - Remove the file using Bash: `rm .claude/claude-estate.local.md`
-   - Report: "Claude Estate stopped (was at cycle N). The ledger at .claude/claude-estate.md is preserved — run /claude-estate:start to resume anytime."
+   - Read `.claude/agent-estate.local.md` to get the current cycle from the `cycle:` field
+   - Remove the file using Bash: `rm .claude/agent-estate.local.md`
+   - Report: "Agent Estate stopped (was at cycle N). The ledger at .claude/agent-estate.md is preserved — run /agent-estate:start to resume anytime."

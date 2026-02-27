@@ -1,14 +1,14 @@
-# Claude-Estate
+# Agent-Estate
 
-<img width="2200" height="1440" alt="CLAUDE_ESTATE" src="https://github.com/user-attachments/assets/7b392a20-acd6-43d1-b2a1-4769b71839fb" />
+<img width="2200" height="1440" alt="AGENT_ESTATE" src="https://github.com/user-attachments/assets/fb464d2e-a064-41ac-82c6-763ef9e8b9d0" />
 
-> *IT'S THE FREE REAL CLAUDE ESTATE*
+> *IT'S THE FREE REAL AGENT ESTATE*
 
 Perpetual autonomous work loop for Claude Code agent with no end condition, no memory regression, no context overfill.
 
 ## About
 
-Claude Estate turns Claude Code into a perpetual autonomous agent — cycle after cycle — maintaining a persistent ledger across all sessions. It never stops until you say so.
+Agent Estate turns Claude Code into a perpetual autonomous agent — cycle after cycle — maintaining a persistent ledger across all sessions. It never stops until you say so.
 
 Built this to run 100+ hour autonomous coding sessions with <10 manual steerings. Used it to build a [from-scratch C++ web browser](https://github.com/MercuriusDream/Vibrowser) in 287 autonomous cycles — 3,374 tests, zero failures.
 
@@ -20,15 +20,15 @@ Built this to run 100+ hour autonomous coding sessions with <10 manual steerings
 ## Install
 
 ```bash
-git clone https://github.com/MercuriusDream/claude-estate.git
+git clone https://github.com/MercuriusDream/agent-estate.git
 
 # symlink into local plugins
 mkdir -p ~/.claude/plugins/local
-ln -s "$(pwd)/claude-estate" ~/.claude/plugins/local/claude-estate
+ln -s "$(pwd)/agent-estate" ~/.claude/plugins/local/agent-estate
 
 # make scripts executable
-chmod +x claude-estate/scripts/setup-estate.sh
-chmod +x claude-estate/hooks/stop-hook.sh
+chmod +x agent-estate/scripts/setup-estate.sh
+chmod +x agent-estate/hooks/stop-hook.sh
 ```
 
 Requires `jq`:
@@ -41,10 +41,10 @@ sudo apt install jq    # debian/ubuntu
 ## Usage
 
 ```
-/claude-estate:start                                # full autonomy
-/claude-estate:start build a web server with tests  # guided prompt
-/claude-estate:status                               # check cycle, stats, handoff
-/claude-estate:stop                                 # only way to stop
+/agent-estate:start                                # full autonomy
+/agent-estate:start build a web server with tests  # guided prompt
+/agent-estate:status                               # check cycle, stats, handoff
+/agent-estate:stop                                 # only way to stop
 ```
 
 ## How It Works
@@ -58,7 +58,7 @@ read ledger → pick next task → do the work → update ledger → try to exit
 
 ### Ledger
 
-`.claude/claude-estate.md` — the persistent brain. Every Claude reads it, every Claude updates it.
+`.claude/agent-estate.md` — the persistent brain. Every Claude reads it, every Claude updates it.
 
 - **Current Status** — phase, focus, momentum, cycle count
 - **Session Log** — what happened each session
@@ -71,11 +71,11 @@ read ledger → pick next task → do the work → update ledger → try to exit
 
 `hooks/stop-hook.sh` — the core engine.
 
-1. Checks if `.claude/claude-estate.local.md` exists (loop active?)
+1. Checks if `.claude/agent-estate.local.md` exists (loop active?)
 2. If active: increments cycle counter, re-injects prompt, blocks exit
 3. If rate limited: waits 60s, retries
 4. If API overloaded: waits 30s, retries
-5. If state file removed (`/claude-estate:stop`): allows normal exit
+5. If state file removed (`/agent-estate:stop`): allows normal exit
 
 ### Work Priority
 
@@ -92,7 +92,7 @@ Built into the protocol:
 ## Files
 
 ```
-claude-estate/
+agent-estate/
 ├── .claude-plugin/plugin.json
 ├── commands/
 │   ├── start.md

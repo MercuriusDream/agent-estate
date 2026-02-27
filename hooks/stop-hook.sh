@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# claude estate — stop hook
+# agent estate — stop hook
 # perpetual loop, no end condition
-# only way to stop: /claude-estate:stop (removes state file)
+# only way to stop: /agent-estate:stop (removes state file)
 
 set -euo pipefail
 
@@ -13,7 +13,7 @@ OVERLOADED_WAIT=30         # seconds to wait on overloaded
 # read stdin (hook input)
 HOOK_INPUT=$(cat)
 
-STATE_FILE=".claude/claude-estate.local.md"
+STATE_FILE=".claude/agent-estate.local.md"
 
 # no state file = no active loop, allow exit
 if [[ ! -f "$STATE_FILE" ]]; then
@@ -34,7 +34,7 @@ fi
 
 # if rate limited, wait it out
 if [[ $WAIT_SECONDS -gt 0 ]]; then
-  echo "Claude Estate: $WAIT_REASON detected — waiting ${WAIT_SECONDS}s before next cycle..." >&2
+  echo "Agent Estate: $WAIT_REASON detected — waiting ${WAIT_SECONDS}s before next cycle..." >&2
   sleep "$WAIT_SECONDS"
 fi
 
@@ -55,7 +55,7 @@ PROMPT_TEXT=$(awk '/^---$/{i++; next} i>=2' "$STATE_FILE")
 
 # fallback prompt if empty
 if [[ -z "$PROMPT_TEXT" ]]; then
-  PROMPT_TEXT="You are Claude Estate — perpetual autonomous agent. Read .claude/claude-estate.md for the ledger. Do work. Update the ledger. Never stop. Stop: /claude-estate:stop"
+  PROMPT_TEXT="You are Agent Estate — perpetual autonomous agent. Read .claude/agent-estate.md for the ledger. Do work. Update the ledger. Never stop. Stop: /agent-estate:stop"
 fi
 
 # update cycle in state file
@@ -65,9 +65,9 @@ mv "$TEMP_FILE" "$STATE_FILE"
 
 # build reason message
 if [[ -n "$WAIT_REASON" ]]; then
-  REASON="Claude Estate cycle $NEXT_CYCLE — resumed after ${WAIT_REASON}. Read .claude/claude-estate.md and immediately start the next cycle of work. Do NOT summarize or stop — do real work now."
+  REASON="Agent Estate cycle $NEXT_CYCLE — resumed after ${WAIT_REASON}. Read .claude/agent-estate.md and immediately start the next cycle of work. Do NOT summarize or stop — do real work now."
 else
-  REASON="Claude Estate cycle $NEXT_CYCLE starting. Read .claude/claude-estate.md ledger, pick the next task, do the work, update the ledger. Do NOT stop or give a summary. Start working immediately."
+  REASON="Agent Estate cycle $NEXT_CYCLE starting. Read .claude/agent-estate.md ledger, pick the next task, do the work, update the ledger. Do NOT stop or give a summary. Start working immediately."
 fi
 
 # block exit, re-inject — always (as long as state file exists)

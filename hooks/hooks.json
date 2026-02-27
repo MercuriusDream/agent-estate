@@ -1,5 +1,5 @@
 {
-  "description": "Claude Estate stop hook — perpetual loop with no end condition",
+  "description": "Agent Estate stop hook — perpetual loop with no end condition",
   "hooks": {
     "Stop": [
       {

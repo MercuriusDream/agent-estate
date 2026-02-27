@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# claude estate — setup
+# agent estate — setup
 # creates state file for the perpetual autonomous loop
 
 set -euo pipefail
@@ -11,13 +11,13 @@ USER_PROMPT="${*:-}"
 mkdir -p .claude
 
 # already active? just continue
-if [[ -f ".claude/claude-estate.local.md" ]]; then
-  CURRENT_CYCLE=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' ".claude/claude-estate.local.md" | grep '^cycle:' | sed 's/cycle: *//')
-  echo "Claude Estate is already active (cycle $CURRENT_CYCLE)"
+if [[ -f ".claude/agent-estate.local.md" ]]; then
+  CURRENT_CYCLE=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' ".claude/agent-estate.local.md" | grep '^cycle:' | sed 's/cycle: *//')
+  echo "Agent Estate is already active (cycle $CURRENT_CYCLE)"
   echo "   Continuing from where we left off."
   echo ""
   # output the prompt so claude picks up
-  awk '/^---$/{i++; next} i>=2' ".claude/claude-estate.local.md"
+  awk '/^---$/{i++; next} i>=2' ".claude/agent-estate.local.md"
   exit 0
 fi
 
@@ -32,7 +32,7 @@ else
   PROMPT_SECTION="USER PROMPT: (none — full autonomy, do anything valuable)"
 fi
 
-cat > .claude/claude-estate.local.md <<STATEEOF
+cat > .claude/agent-estate.local.md <<STATEEOF
 ---
 active: true
 cycle: 1
@@ -40,17 +40,17 @@ started_at: "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 user_prompt: "$(echo "$USER_PROMPT" | sed 's/"/\\"/g')"
 ---
 
-You are Claude Estate — a perpetual autonomous agent. There is no end condition.
+You are Agent Estate — a perpetual autonomous agent. There is no end condition.
 
 $PROMPT_SECTION
 
-READ the ledger at .claude/claude-estate.md for full context of all prior work.
+READ the ledger at .claude/agent-estate.md for full context of all prior work.
 
 CYCLE PROTOCOL:
-1. Read .claude/claude-estate.md (the ledger) — if it doesn't exist, create it
+1. Read .claude/agent-estate.md (the ledger) — if it doesn't exist, create it
 2. Decide what to work on next (prioritize Future Works, then More Works, then discover new things)
 3. DO THE WORK — write code, fix bugs, add features, run tests, refactor
-4. Update .claude/claude-estate.md with everything you did, discovered, and plan next
+4. Update .claude/agent-estate.md with everything you did, discovered, and plan next
 5. Update statistics, session log, and the "Tell The Next Claude" handoff message
 6. You are never done. There is always more.
 
@@ -69,7 +69,7 @@ RULES:
 - Be honest in handoffs. Don't oversell.
 - Be ambitious. Do multiple things per cycle.
 - Make it better than you found it.
-- To stop: /claude-estate:stop
+- To stop: /agent-estate:stop
 
 CRITICAL — AUTOMATIC LOOPING:
 - After completing a cycle, IMMEDIATELY start the next cycle. DO NOT stop.
@@ -77,17 +77,17 @@ CRITICAL — AUTOMATIC LOOPING:
 - The pattern is: finish work → update ledger → read ledger again → start next cycle.
 - You are a PERPETUAL agent. When you finish one cycle, START THE NEXT ONE.
 - NEVER give a final summary and stop. Always keep going.
-- The ONLY way to stop is /claude-estate:stop (which removes the state file).
+- The ONLY way to stop is /agent-estate:stop (which removes the state file).
 STATEEOF
 
 cat <<EOF
-Claude Estate activated — perpetual autonomous mode
+Agent Estate activated — perpetual autonomous mode
 
    Cycle: 1
    Prompt: $(if [[ -n "$USER_PROMPT" ]]; then echo "\"$USER_PROMPT\""; else echo "(full autonomy)"; fi)
    End condition: NONE
-   Stop: /claude-estate:stop
-   Status: /claude-estate:status
+   Stop: /agent-estate:stop
+   Status: /agent-estate:status
 
    The stop hook is now active. Claude cannot exit this session.
    Every response feeds right back in. True infinite loop.
