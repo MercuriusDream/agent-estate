@@ -26,10 +26,10 @@ Built this to run 100+ hour autonomous coding sessions with <10 manual steerings
 /plugin install agent-estate@MercuriusDream
 ```
 
-### npx (cross-agent)
+### npx ([skills.sh](https://skills.sh))
 
 ```bash
-npx add-skill MercuriusDream/agent-estate
+npx skills add MercuriusDream/agent-estate
 ```
 
 ### Manual

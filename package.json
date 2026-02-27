@@ -1,0 +1,37 @@
+{
+    "name": "agent-estate",
+    "version": "1.0.0",
+    "description": "Perpetual autonomous work loop for Claude Code — no end condition, persistent ledger, cross-context memory. Battle-tested: 287 cycles, 100+ hours, zero failures.",
+    "keywords": [
+        "claude-code",
+        "claude-plugin",
+        "agent-skills",
+        "autonomous-agent",
+        "ai-agent",
+        "perpetual-agent",
+        "ai-coding-agent",
+        "claude",
+        "anthropic",
+        "skill",
+        "agentic",
+        "autonomous-coding"
+    ],
+    "homepage": "https://github.com/MercuriusDream/agent-estate",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/MercuriusDream/agent-estate.git"
+    },
+    "bugs": {
+        "url": "https://github.com/MercuriusDream/agent-estate/issues"
+    },
+    "author": "MercuriusDream (Wooseok Sung)",
+    "license": "AGPL-3.0",
+    "agents": {
+        "skills": [
+            {
+                "name": "agent-estate",
+                "path": "./SKILL.md"
+            }
+        ]
+    }
+}
