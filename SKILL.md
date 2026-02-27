@@ -37,7 +37,8 @@ The core engine. Runs on every Claude "Stop" event:
 
 1. Checks if `.claude/agent-estate.local.md` exists (is the loop active?)
 2. If **not active**: exits normally (exit 0)
-3. If **active**:
+3. If **done** (`done: true` in frontmatter): removes state file, exits normally (auto-stop)
+4. If **active and not done**:
    - Detects rate limits (429) → waits 60s
    - Detects API overload (529) → waits 30s
    - Increments cycle counter in the state file
@@ -68,10 +69,11 @@ Ephemeral file that signals an active loop. Contains the cycle counter and prese
 
 | Command | Description |
 |---------|-------------|
-| `/agent-estate:start` | Activate the perpetual loop (optionally with a guiding prompt) |
-| `/agent-estate:start <prompt>` | Start with a specific task focus preserved across all cycles |
-| `/agent-estate:status` | Show current cycle, stats, and the latest handoff message |
-| `/agent-estate:stop` | Remove the state file to allow Claude to exit |
+| `/agent-estate:start` | Activate the loop in perpetual mode (no end condition) |
+| `/agent-estate:start <prompt>` | Start perpetual mode with a specific task focus |
+| `/agent-estate:start --done <prompt>` | Start in done mode — auto-stops when task is complete |
+| `/agent-estate:status` | Show current cycle, mode, stats, and the latest handoff message |
+| `/agent-estate:stop` | Manually remove the state file to stop the loop |
 
 ## Work Priority Protocol
 

@@ -1,6 +1,6 @@
 {
     "name": "agent-estate",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Perpetual autonomous work loop for Claude Code — no end condition, persistent ledger, cross-context memory. Battle-tested: 287 cycles, 100+ hours, zero failures.",
     "keywords": [
         "claude-code",

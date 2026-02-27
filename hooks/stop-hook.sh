@@ -1,8 +1,9 @@
 #!/bin/bash
 
 # agent estate — stop hook
-# perpetual loop, no end condition
-# only way to stop: /agent-estate:stop (removes state file)
+# blocks exit and re-injects prompt unless done or stopped
+# stop: /agent-estate:stop (removes state file)
+# done: claude writes done: true to state file
 
 set -euo pipefail
 
@@ -17,6 +18,18 @@ STATE_FILE=".claude/agent-estate.local.md"
 
 # no state file = no active loop, allow exit
 if [[ ! -f "$STATE_FILE" ]]; then
+  exit 0
+fi
+
+# parse frontmatter
+FRONTMATTER=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$STATE_FILE")
+CYCLE=$(echo "$FRONTMATTER" | grep '^cycle:' | sed 's/cycle: *//' || echo "0")
+DONE=$(echo "$FRONTMATTER" | grep '^done:' | sed 's/done: *//' || echo "false")
+
+# check if task is marked done
+if [[ "$DONE" == "true" ]]; then
+  echo "Agent Estate: task marked done at cycle $CYCLE — stopping loop." >&2
+  rm -f "$STATE_FILE"
   exit 0
 fi
 
@@ -38,10 +51,6 @@ if [[ $WAIT_SECONDS -gt 0 ]]; then
   sleep "$WAIT_SECONDS"
 fi
 
-# parse frontmatter
-FRONTMATTER=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$STATE_FILE")
-CYCLE=$(echo "$FRONTMATTER" | grep '^cycle:' | sed 's/cycle: *//' || echo "0")
-
 # if cycle is not numeric, reset to 0
 if [[ ! "$CYCLE" =~ ^[0-9]+$ ]]; then
   CYCLE=0
@@ -55,7 +64,7 @@ PROMPT_TEXT=$(awk '/^---$/{i++; next} i>=2' "$STATE_FILE")
 
 # fallback prompt if empty
 if [[ -z "$PROMPT_TEXT" ]]; then
-  PROMPT_TEXT="You are Agent Estate — perpetual autonomous agent. Read .claude/agent-estate.md for the ledger. Do work. Update the ledger. Never stop. Stop: /agent-estate:stop"
+  PROMPT_TEXT="You are Agent Estate — autonomous agent. Read .claude/agent-estate.md for the ledger. Do work. Update the ledger. Stop: /agent-estate:stop"
 fi
 
 # update cycle in state file
@@ -70,7 +79,7 @@ else
   REASON="Agent Estate cycle $NEXT_CYCLE starting. Read .claude/agent-estate.md ledger, pick the next task, do the work, update the ledger. Do NOT stop or give a summary. Start working immediately."
 fi
 
-# block exit, re-inject — always (as long as state file exists)
+# block exit, re-inject — always (as long as state file exists and not done)
 jq -n \
   --arg reason "$REASON" \
   '{
@@ -79,3 +88,4 @@ jq -n \
   }'
 
 exit 0
+

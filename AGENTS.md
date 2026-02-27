@@ -48,14 +48,14 @@ Slash commands users invoke inside Claude Code. Each `.md` file:
 Event-driven scripts. `hooks.json` maps Claude Code lifecycle events to shell commands:
 
 - **Event**: `"Stop"` — fires when Claude tries to end its turn
-- **Action**: Runs `stop-hook.sh` which reads stdin (hook context), detects rate limits, increments cycle counter, and outputs `{"decision": "block", "reason": "..."}` JSON to prevent exit
+- **Action**: Runs `stop-hook.sh` which reads stdin (hook context), checks for `done: true` in state file (auto-stop), detects rate limits, increments cycle counter, and outputs `{"decision": "block", "reason": "..."}` JSON to prevent exit
 - `${CLAUDE_PLUGIN_ROOT}` is a special variable resolved by Claude Code to the plugin's root directory
 
 ### State Files (runtime, not in repo)
 
 Created at runtime in the user's project directory:
 
-- `.claude/agent-estate.local.md` — ephemeral, signals active loop. Has YAML frontmatter (`active`, `cycle`, `started_at`, `user_prompt`) followed by the full prompt. Removing this file is the only way to stop the loop.
+- `.claude/agent-estate.local.md` — ephemeral, signals active loop. Has YAML frontmatter (`active`, `cycle`, `mode`, `done`, `started_at`, `user_prompt`) followed by the full prompt. `mode` is either `"perpetual"` (default) or `"done"` (auto-stop). When Claude sets `done: true`, the stop hook removes the state file and allows exit. Manually removing this file via `/agent-estate:stop` is the other way to stop.
 - `.claude/agent-estate.md` — persistent ledger. Tracks all work, sessions, statistics, and the "Tell The Next Claude" handoff message across contexts.
 
 ## Dependencies

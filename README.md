@@ -56,10 +56,11 @@ sudo apt install jq    # debian/ubuntu
 ## Usage
 
 ```
-/agent-estate:start                                # full autonomy
-/agent-estate:start build a web server with tests  # guided prompt
-/agent-estate:status                               # check cycle, stats, handoff
-/agent-estate:stop                                 # only way to stop
+/agent-estate:start                                     # full autonomy, perpetual
+/agent-estate:start build a web server with tests       # guided prompt, perpetual
+/agent-estate:start --done build a web server with tests  # stops when done
+/agent-estate:status                                    # check cycle, stats, handoff
+/agent-estate:stop                                      # manual stop
 ```
 
 ## How It Works
@@ -87,10 +88,11 @@ read ledger → pick next task → do the work → update ledger → try to exit
 `hooks/stop-hook.sh` — the core engine.
 
 1. Checks if `.claude/agent-estate.local.md` exists (loop active?)
-2. If active: increments cycle counter, re-injects prompt, blocks exit
-3. If rate limited: waits 60s, retries
-4. If API overloaded: waits 30s, retries
-5. If state file removed (`/agent-estate:stop`): allows normal exit
+2. Checks if `done: true` in frontmatter → removes state file, allows exit
+3. If active and not done: increments cycle counter, re-injects prompt, blocks exit
+4. If rate limited: waits 60s, retries
+5. If API overloaded: waits 30s, retries
+6. If state file removed (`/agent-estate:stop`): allows normal exit
 
 ### Work Priority
 

@@ -9,6 +9,8 @@ allowed-tools: ["Read(.claude/agent-estate.local.md)", "Read(.claude/agent-estat
 
 2. If active, show:
    - Current cycle number
+   - Mode (perpetual or done)
+   - Done status (true/false, only if mode is done)
    - Started at timestamp
    - The preserved prompt from the state file
 
