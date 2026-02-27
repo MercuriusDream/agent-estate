@@ -1,5 +1,5 @@
 ---
-name: claude-estate
+name: estate
 description: Perpetual autonomous work loop for Claude Code — no end condition, no memory regression, no context overfill. Maintains a persistent ledger across all sessions.
 ---
 
